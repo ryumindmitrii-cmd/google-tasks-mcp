@@ -1,0 +1,13 @@
+[mcp_servers.googleTasks]
+command = 'C:\PATH\TO\google-tasks-mcp\.venv\Scripts\python.exe'
+args = ['C:\PATH\TO\google-tasks-mcp\google_tasks_mcp.py']
+env = { GOOGLE_TASKS_MCP_CONFIG_DIR = 'C:\PATH\TO\google-tasks-mcp', GOOGLE_TASKS_MCP_MODE = 'read_only', PYTHONUTF8 = '1' }
+enabled = true
+tool_timeout_sec = 60
+
+[mcp_servers.googleTasksWrite]
+command = 'C:\PATH\TO\google-tasks-mcp\.venv\Scripts\python.exe'
+args = ['C:\PATH\TO\google-tasks-mcp\google_tasks_mcp.py']
+env = { GOOGLE_TASKS_MCP_CONFIG_DIR = 'C:\PATH\TO\google-tasks-mcp', GOOGLE_TASKS_MCP_TOKEN_FILE = 'C:\PATH\TO\google-tasks-mcp\token.tasks.write.json', GOOGLE_TASKS_MCP_MODE = 'write', PYTHONUTF8 = '1' }
+enabled = true
+tool_timeout_sec = 60

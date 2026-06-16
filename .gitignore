@@ -1,0 +1,41 @@
+# Secrets and OAuth state
+credentials.json
+credentials.*.json
+token*.json
+*.bak
+.env
+.env.*
+
+# Local logs and screenshots
+*.log
+oauth-*.out.log
+oauth-*.err.log
+audience-window*.png
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.b64
+LOCAL_*.md
+FORK_REPORT.md
+SANITIZATION_REPORT.md
+POST_ANNOUNCE_DRAFT.md
+
+# Python/runtime
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
