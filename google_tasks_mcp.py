@@ -51,6 +51,15 @@ class AuthRequiredError(RuntimeError):
     pass
 
 
+def _oauth_client_config() -> dict[str, Any]:
+    config = json.loads(CREDENTIALS_FILE.read_text(encoding="utf-8"))
+    for client_type in ("installed", "web"):
+        client = config.get(client_type)
+        if isinstance(client, dict):
+            client.setdefault("client_secret", None)
+    return config
+
+
 def _json_safe(value: Any) -> Any:
     if isinstance(value, dict):
         return {k: _json_safe(v) for k, v in value.items() if v is not None}
@@ -99,7 +108,7 @@ def _load_credentials(interactive: bool = False) -> Credentials:
             f"Missing OAuth Desktop credentials file: {CREDENTIALS_FILE}"
         )
 
-    flow = InstalledAppFlow.from_client_secrets_file(str(CREDENTIALS_FILE), SCOPES)
+    flow = InstalledAppFlow.from_client_config(_oauth_client_config(), SCOPES)
     creds = flow.run_local_server(port=0)
     TOKEN_FILE.write_text(creds.to_json(), encoding="utf-8")
     return creds

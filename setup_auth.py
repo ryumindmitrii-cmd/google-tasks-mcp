@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 
@@ -27,6 +28,21 @@ CREDENTIALS_FILE = Path(
     os.environ.get("GOOGLE_TASKS_MCP_CREDENTIALS_FILE", CONFIG_DIR / "credentials.json")
 )
 TOKEN_FILE = Path(os.environ.get("GOOGLE_TASKS_MCP_TOKEN_FILE", DEFAULT_TOKEN_FILE))
+OPEN_BROWSER = os.environ.get("GOOGLE_TASKS_MCP_OPEN_BROWSER", "1").strip().lower() not in {
+    "0",
+    "false",
+    "no",
+    "off",
+}
+
+
+def _oauth_client_config() -> dict:
+    config = json.loads(CREDENTIALS_FILE.read_text(encoding="utf-8"))
+    for client_type in ("installed", "web"):
+        client = config.get(client_type)
+        if isinstance(client, dict):
+            client.setdefault("client_secret", None)
+    return config
 
 
 def main() -> int:
@@ -47,8 +63,8 @@ def main() -> int:
         creds.refresh(Request())
 
     if not creds or not creds.valid:
-        flow = InstalledAppFlow.from_client_secrets_file(str(CREDENTIALS_FILE), SCOPES)
-        creds = flow.run_local_server(port=0)
+        flow = InstalledAppFlow.from_client_config(_oauth_client_config(), SCOPES)
+        creds = flow.run_local_server(port=0, open_browser=OPEN_BROWSER)
 
     TOKEN_FILE.write_text(creds.to_json(), encoding="utf-8")
 

@@ -93,8 +93,15 @@ Then:
 4. In Clients, create client:
    - Application type: `Desktop app`.
    - Name: `Google Tasks MCP Desktop`.
-5. Download the JSON and save it locally as `credentials.json` after backing up
-   any old local credential file.
+5. Open the created client and check **Client secrets**:
+   - Google Auth Platform may create the Desktop client without an immediately
+     downloadable secret.
+   - If `Download JSON` does not include `client_secret`, use **Add secret** and
+     store the new secret immediately.
+   - Client secrets are only visible/downloadable at creation or rotation time.
+     A lost secret cannot be recovered.
+6. Save the complete OAuth client JSON locally as `credentials.json` after
+   backing up any old local credential file.
 
 ## Local Migration
 
@@ -121,3 +128,20 @@ $env:GOOGLE_TASKS_MCP_TOKEN_FILE=(Join-Path $PWD 'token.tasks.write.json')
 6. Verify both MCPs with `auth_status` and `list_tasklists`.
 
 Do not print or inspect credential/token contents during migration.
+
+## Client Secret Visibility
+
+For new OAuth clients, Google may show only masked saved secrets such as
+`****abcd`. Masked values are not usable in `credentials.json`.
+
+Safe handling pattern:
+
+1. Create or rotate the secret.
+2. Store the full value locally immediately, without printing it to chat,
+   terminal logs, screenshots, Git history, or docs.
+3. Verify only metadata such as presence and length.
+4. Run OAuth setup and verify `auth_status` / `list_tasklists`.
+
+If the secret is lost before verification, create a fresh Desktop client or
+rotate the secret again. Do not attempt to recover masked secret values from
+logs, screenshots, or public docs.

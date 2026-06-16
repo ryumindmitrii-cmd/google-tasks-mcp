@@ -30,8 +30,9 @@ python -m pip install -r requirements.txt
 5. Enable only Google Tasks API.
 6. Configure Google Auth Platform for this dedicated project.
 7. Create an OAuth client of type `Desktop app`.
-8. Download the OAuth client JSON as `credentials.json` into the local MCP
-   config directory. Do not commit it.
+8. Add/download the OAuth client secret immediately and save the OAuth client
+   JSON as `credentials.json` into the local MCP config directory. Do not commit
+   it.
 9. Run OAuth setup for read-only and write modes.
 10. Add the MCP server entries to Codex config and restart Codex.
 
@@ -74,6 +75,12 @@ shortcut.
 
 ## OAuth Setup
 
+Google Auth Platform now shows/downloads OAuth client secrets only at creation
+or rotation time. If the downloaded JSON does not contain `client_secret`, open
+the OAuth client, use **Client secrets -> Add secret**, and immediately store the
+new secret in your local `credentials.json`. A lost secret cannot be recovered;
+create a new secret or a new Desktop client instead.
+
 Run read-only authorization:
 
 ```powershell
@@ -91,6 +98,14 @@ python .\setup_auth.py
 
 Complete Google authorization in the browser for each mode. Keep the generated
 token files private.
+
+For remote-debug/browser-controlled setups, prevent `setup_auth.py` from opening
+the default browser and copy the printed URL into the browser you control:
+
+```powershell
+$env:GOOGLE_TASKS_MCP_OPEN_BROWSER='0'
+python .\setup_auth.py
+```
 
 ## Codex Config
 
@@ -129,6 +144,12 @@ If tokens are expiring weekly and the OAuth app is in Testing mode, create a
 dedicated Google Cloud project for this MCP, publish only that dedicated OAuth
 app, then re-run both read-only and write OAuth setup commands so the new
 refresh tokens are tied to the dedicated project.
+
+If OAuth setup fails with `client_secret is missing` or `invalid_client`, check
+only credential metadata: the local `credentials.json` must contain an
+`installed.client_secret` value for Google Desktop OAuth. Do not print the
+secret. If it is missing or invalid, rotate/create a new secret in Google Auth
+Platform and store it locally immediately.
 
 ## Tools
 
